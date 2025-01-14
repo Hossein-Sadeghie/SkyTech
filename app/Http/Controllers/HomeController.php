@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
@@ -52,12 +53,20 @@ class HomeController extends Controller
         ]);
 
         if (auth()->attempt($request->only('phone', 'password'))) {
-            return redirect()->route('dashboard');
-        } else {
-            return back()->withErrors([
-                'phone' => 'شماره موبایل یا رمز عبور اشتباه است.',
-            ])->withInput();
+            $user = auth()->user();
+
+            if ($user->role_id == 1) {
+                return redirect()->route('Admin.dashboard');
+            } elseif ($user->role_id == 2) {
+                return redirect()->route('User.dashboard');
+            } elseif ($user->role_id == 3) {
+                return redirect()->route('Supplier.dashboard');
+            }
         }
+
+        return back()->withErrors([
+            'phones' => 'شماره موبایل یا پسورد نادرست است.',
+        ])->withInput()->with('phone', $request->phone);
     }
 
 
@@ -74,7 +83,7 @@ class HomeController extends Controller
         $request->validate([
             'phone' => 'required|regex:/^09\d{9}$/|unique:users,phone',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:5|confirmed',
         ], [
             'phone.required' => 'شماره موبایل را وارد کنید.',
             'phone.regex' => 'فرمت شماره موبایل معتبر نیست.',
@@ -83,11 +92,11 @@ class HomeController extends Controller
             'email.email' => 'فرمت ایمیل معتبر نیست.',
             'email.unique' => 'این ایمیل قبلاً ثبت شده است.',
             'password.required' => 'رمز عبور را وارد کنید.',
-            'password.min' => 'رمز عبور باید حداقل ۶ کاراکتر باشد.',
+            'password.min' => 'رمز عبور باید حداقل پنج کاراکتر باشد.',
             'password.confirmed' => 'رمز عبور و تکرار آن مطابقت ندارند.',
         ]);
 
-        // ایجاد کاربر جدید
+
         $user = User::create([
             'phone' => $request->phone,
             'email' => $request->email,
@@ -98,6 +107,13 @@ class HomeController extends Controller
         auth()->login($user);
 
         return redirect()->route('dashboard');
+    }
+
+
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('loginPhone');
     }
 
 

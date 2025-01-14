@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('Layouts.layout')
 @section('title')
     <title>
         ورود
@@ -14,7 +14,7 @@
                         @csrf
                         <div class="crs_log_wrap">
                             <div class="crs_log__thumb">
-                                <img src="assets/img/banner-2.jpg" class="img-fluid" alt="" />
+                                <img src="assets/img/banner-2.jpg" class="img-fluid" alt=""/>
                             </div>
                             <div class="crs_log__caption">
                                 <div class="rcs_log_123">
@@ -32,14 +32,15 @@
                                     @endif
                                     <div class="form-group">
                                         <label>پسورد خود را وارد کنید</label>
-                                        <input type="text" name="password" class="form-control" placeholder="******" />
+                                        <input type="text" name="password" class="form-control" placeholder="******"/>
                                     </div>
 
-                                    <input type="hidden" name="phone"  value="{{ old('phone', $phone) }}" >
+                                    <input type="hidden" name="phone" value="{{ old('phone', $phone) }}">
 
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn full-width btn-md theme-bg text-white">ورود</button>
+                                        <button type="submit" class="btn full-width btn-md theme-bg text-white">ورود
+                                        </button>
                                     </div>
                                 </div>
 
